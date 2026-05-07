@@ -6,6 +6,7 @@
 #include "WheeledVehiclePawn.h"
 #include "DTPawn.generated.h"
 
+class UAgentDataLoggerComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
@@ -48,6 +49,8 @@ class ADTPawn : public AWheeledVehiclePawn
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Components", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USplineFollowerComponent> SplineFollower;
+  
+	TObjectPtr<UAgentDataLoggerComponent> AgentDataLogger;
 
 protected:
 

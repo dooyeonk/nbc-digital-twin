@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "SplineFollowerComponent.h"
+#include "DataLogger/AgentDataLoggerComponent.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -54,6 +55,8 @@ ADTPawn::ADTPawn()
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
 	SplineFollower = CreateDefaultSubobject<USplineFollowerComponent>(TEXT("SplineFollower"));
+  
+	AgentDataLogger = CreateDefaultSubobject<UAgentDataLoggerComponent>(TEXT("AgentDataLogger"));
 
 }
 
