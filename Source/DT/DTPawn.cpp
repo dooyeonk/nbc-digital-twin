@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "SplineFollowerComponent.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -52,6 +53,8 @@ ADTPawn::ADTPawn()
 	// get the Chaos Wheeled movement component
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
+	SplineFollower = CreateDefaultSubobject<USplineFollowerComponent>(TEXT("SplineFollower"));
+
 }
 
 void ADTPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -60,30 +63,30 @@ void ADTPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompon
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// steering 
+		// steering
 		EnhancedInputComponent->BindAction(SteeringAction, ETriggerEvent::Triggered, this, &ADTPawn::Steering);
 		EnhancedInputComponent->BindAction(SteeringAction, ETriggerEvent::Completed, this, &ADTPawn::Steering);
 
-		// throttle 
+		// throttle
 		EnhancedInputComponent->BindAction(ThrottleAction, ETriggerEvent::Triggered, this, &ADTPawn::Throttle);
 		EnhancedInputComponent->BindAction(ThrottleAction, ETriggerEvent::Completed, this, &ADTPawn::Throttle);
 
-		// break 
+		// break
 		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Triggered, this, &ADTPawn::Brake);
 		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Started, this, &ADTPawn::StartBrake);
 		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Completed, this, &ADTPawn::StopBrake);
 
-		// handbrake 
+		// handbrake
 		EnhancedInputComponent->BindAction(HandbrakeAction, ETriggerEvent::Started, this, &ADTPawn::StartHandbrake);
 		EnhancedInputComponent->BindAction(HandbrakeAction, ETriggerEvent::Completed, this, &ADTPawn::StopHandbrake);
 
-		// look around 
+		// look around
 		EnhancedInputComponent->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &ADTPawn::LookAround);
 
-		// toggle camera 
+		// toggle camera
 		EnhancedInputComponent->BindAction(ToggleCameraAction, ETriggerEvent::Triggered, this, &ADTPawn::ToggleCamera);
 
-		// reset the vehicle 
+		// reset the vehicle
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &ADTPawn::ResetVehicle);
 	}
 	else
@@ -110,34 +113,46 @@ void ADTPawn::Tick(float Delta)
 void ADTPawn::Steering(const FInputActionValue& Value)
 {
 	// get the input magnitude for steering
-	float SteeringValue = Value.Get<float>();
+	DoSteering(Value.Get<float>());
+}
 
-	// add the input
+void ADTPawn::DoSteering(float SteeringValue)
+{
 	ChaosVehicleMovement->SetSteeringInput(SteeringValue);
 }
 
 void ADTPawn::Throttle(const FInputActionValue& Value)
 {
 	// get the input magnitude for the throttle
-	float ThrottleValue = Value.Get<float>();
+	DoThrottle(Value.Get<float>());
+}
 
-	// add the input
+void ADTPawn::DoThrottle(float ThrottleValue)
+{
 	ChaosVehicleMovement->SetThrottleInput(ThrottleValue);
 }
 
 void ADTPawn::Brake(const FInputActionValue& Value)
 {
 	// get the input magnitude for the brakes
-	float BreakValue = Value.Get<float>();
+	DoBrake(Value.Get<float>());
+}
 
+void ADTPawn::DoBrake(float BrakeValue)
+{
 	// add the input
-	ChaosVehicleMovement->SetBrakeInput(BreakValue);
+	ChaosVehicleMovement->SetBrakeInput(BrakeValue);
 }
 
 void ADTPawn::StartBrake(const FInputActionValue& Value)
 {
 	// call the Blueprint hook for the break lights
 	BrakeLights(true);
+}
+
+void ADTPawn::DoBrakeStart()
+{
+	StartBrake(true);
 }
 
 void ADTPawn::StopBrake(const FInputActionValue& Value)
@@ -169,7 +184,7 @@ void ADTPawn::StopHandbrake(const FInputActionValue& Value)
 
 void ADTPawn::LookAround(const FInputActionValue& Value)
 {
-	// get the flat angle value for the input 
+	// get the flat angle value for the input
 	float LookValue = Value.Get<float>();
 
 	// add the input
@@ -194,7 +209,7 @@ void ADTPawn::ResetVehicle(const FInputActionValue& Value)
 	FRotator ResetRotation = GetActorRotation();
 	ResetRotation.Pitch = 0.0f;
 	ResetRotation.Roll = 0.0f;
-	
+
 	// teleport the actor to the reset spot and reset physics
 	SetActorTransform(FTransform(ResetRotation, ResetLocation, FVector::OneVector), false, nullptr, ETeleportType::TeleportPhysics);
 
