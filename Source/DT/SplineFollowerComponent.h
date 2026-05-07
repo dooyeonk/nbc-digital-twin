@@ -58,7 +58,7 @@ private:
 		meta=(AllowPrivateAccess="true"))
 	float LookAheadSpeedFactor = 0.3f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SplineFollower|Steering",sv
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SplineFollower|Steering",
 		meta=(AllowPrivateAccess="true"))
 	float MaxYawDelta = 40.f;
 

@@ -12,6 +12,8 @@ class USpringArmComponent;
 class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
 class USplineFollowerComponent;
+class UCameraSensorComponent; 
+class ULidarSensorComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -51,6 +53,12 @@ class ADTPawn : public AWheeledVehiclePawn
 	TObjectPtr<USplineFollowerComponent> SplineFollower;
   
 	TObjectPtr<UAgentDataLoggerComponent> AgentDataLogger;
+		
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraSensorComponent> CameraSensor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<ULidarSensorComponent> LidarSensor;
 
 protected:
 
@@ -147,4 +155,8 @@ public:
 	FORCEINLINE UCameraComponent* GetBackCamera() const { return BackCamera; }
 	/** Returns the cast Chaos Vehicle Movement subobject */
 	FORCEINLINE const TObjectPtr<UChaosWheeledVehicleMovementComponent>& GetChaosVehicleMovement() const { return ChaosVehicleMovement; }
+
+	FORCEINLINE UCameraSensorComponent* GetCameraSensor() const { return CameraSensor; }
+	FORCEINLINE ULidarSensorComponent* GetLidarSensor() const { return LidarSensor; }
 };
+
