@@ -6,6 +6,7 @@
 #include "WheeledVehiclePawn.h"
 #include "DTPawn.generated.h"
 
+class UAgentDataLoggerComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
@@ -18,7 +19,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
  *  Vehicle Pawn class
  *  Handles common functionality for all vehicle types,
  *  including input handling and camera management.
- *  
+ *
  *  Specific vehicle configurations are handled in subclasses.
  */
 UCLASS(abstract)
@@ -44,6 +45,8 @@ class ADTPawn : public AWheeledVehiclePawn
 
 	/** Cast pointer to the Chaos Vehicle movement component */
 	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
+
+	TObjectPtr<UAgentDataLoggerComponent> AgentDataLogger;
 
 protected:
 
