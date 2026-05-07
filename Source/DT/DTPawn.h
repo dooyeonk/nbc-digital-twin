@@ -11,6 +11,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class UInputAction;
 class UChaosWheeledVehicleMovementComponent;
+class USplineFollowerComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateVehicle, Log, All);
@@ -46,6 +47,9 @@ class ADTPawn : public AWheeledVehiclePawn
 	/** Cast pointer to the Chaos Vehicle movement component */
 	TObjectPtr<UChaosWheeledVehicleMovementComponent> ChaosVehicleMovement;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category ="Components", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<USplineFollowerComponent> SplineFollower;
+  
 	TObjectPtr<UAgentDataLoggerComponent> AgentDataLogger;
 
 protected:
@@ -96,19 +100,23 @@ public:
 
 	// End Actor interface
 
-protected:
-
 	/** Handles steering input */
 	void Steering(const FInputActionValue& Value);
+	void DoSteering(float SteeringValue);
 
 	/** Handles throttle input */
 	void Throttle(const FInputActionValue& Value);
+	void DoThrottle(float ThrottleValue);
 
 	/** Handles brake input */
 	void Brake(const FInputActionValue& Value);
+	void DoBrake(float BrakeValue);
+
 
 	/** Handles brake start/stop inputs */
 	void StartBrake(const FInputActionValue& Value);
+	void DoBrakeStart();
+
 	void StopBrake(const FInputActionValue& Value);
 
 	/** Handles handbrake start/stop inputs */

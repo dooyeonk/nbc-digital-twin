@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "SplineFollowerComponent.h"
 #include "DataLogger/AgentDataLoggerComponent.h"
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
@@ -53,6 +54,8 @@ ADTPawn::ADTPawn()
 	// get the Chaos Wheeled movement component
 	ChaosVehicleMovement = CastChecked<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
 
+	SplineFollower = CreateDefaultSubobject<USplineFollowerComponent>(TEXT("SplineFollower"));
+  
 	AgentDataLogger = CreateDefaultSubobject<UAgentDataLoggerComponent>(TEXT("AgentDataLogger"));
 
 }
@@ -113,34 +116,46 @@ void ADTPawn::Tick(float Delta)
 void ADTPawn::Steering(const FInputActionValue& Value)
 {
 	// get the input magnitude for steering
-	float SteeringValue = Value.Get<float>();
+	DoSteering(Value.Get<float>());
+}
 
-	// add the input
+void ADTPawn::DoSteering(float SteeringValue)
+{
 	ChaosVehicleMovement->SetSteeringInput(SteeringValue);
 }
 
 void ADTPawn::Throttle(const FInputActionValue& Value)
 {
 	// get the input magnitude for the throttle
-	float ThrottleValue = Value.Get<float>();
+	DoThrottle(Value.Get<float>());
+}
 
-	// add the input
+void ADTPawn::DoThrottle(float ThrottleValue)
+{
 	ChaosVehicleMovement->SetThrottleInput(ThrottleValue);
 }
 
 void ADTPawn::Brake(const FInputActionValue& Value)
 {
 	// get the input magnitude for the brakes
-	float BreakValue = Value.Get<float>();
+	DoBrake(Value.Get<float>());
+}
 
+void ADTPawn::DoBrake(float BrakeValue)
+{
 	// add the input
-	ChaosVehicleMovement->SetBrakeInput(BreakValue);
+	ChaosVehicleMovement->SetBrakeInput(BrakeValue);
 }
 
 void ADTPawn::StartBrake(const FInputActionValue& Value)
 {
 	// call the Blueprint hook for the break lights
 	BrakeLights(true);
+}
+
+void ADTPawn::DoBrakeStart()
+{
+	StartBrake(true);
 }
 
 void ADTPawn::StopBrake(const FInputActionValue& Value)
