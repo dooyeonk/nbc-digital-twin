@@ -71,6 +71,17 @@ LidarSensor->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
 
 }
 
+void ADTPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (LidarSensor)
+	{
+		LidarSensor->StartScan();
+		UE_LOG(LogTemplateVehicle, Log, TEXT("LiDAR scanning started automatically"));
+	}
+}
+
 void ADTPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

@@ -103,7 +103,7 @@ public:
 	// End Pawn interface
 
 	// Begin Actor interface
-
+	virtual void BeginPlay() override;
 	virtual void Tick(float Delta) override;
 
 	// End Actor interface
