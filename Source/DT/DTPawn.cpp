@@ -12,6 +12,8 @@
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "SplineFollowerComponent.h"
 #include "DataLogger/AgentDataLoggerComponent.h"
+#include "Sensor/CameraSensorComponent.h"    
+#include "Sensor/LidarSensorComponent.h" 
 
 #define LOCTEXT_NAMESPACE "VehiclePawn"
 
@@ -58,6 +60,26 @@ ADTPawn::ADTPawn()
   
 	AgentDataLogger = CreateDefaultSubobject<UAgentDataLoggerComponent>(TEXT("AgentDataLogger"));
 
+	CameraSensor = CreateDefaultSubobject<UCameraSensorComponent>(TEXT("CameraSensor"));
+	
+CameraSensor->SetupAttachment(GetMesh());
+
+
+LidarSensor = CreateDefaultSubobject<ULidarSensorComponent>(TEXT("LidarSensor"));
+LidarSensor->SetupAttachment(GetMesh());
+LidarSensor->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+
+}
+
+void ADTPawn::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (LidarSensor)
+	{
+		LidarSensor->StartScan();
+		UE_LOG(LogTemplateVehicle, Log, TEXT("LiDAR scanning started automatically"));
+	}
 }
 
 void ADTPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
