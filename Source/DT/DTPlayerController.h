@@ -9,6 +9,9 @@
 class UInputMappingContext;
 class ADTPawn;
 class UDTUI;
+class USensorViewWidget;
+class UTexture2D;
+class UTextureRenderTarget2D;
 
 /**
  *  Vehicle Player Controller class
@@ -45,7 +48,11 @@ protected:
 	/** Pointer to the UI widget */
 	TObjectPtr<UDTUI> VehicleUI;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = UI)
+	TSubclassOf<USensorViewWidget> SensorViewWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<USensorViewWidget> SensorViewWidget;
 
 	// Begin Actor interface
 protected:
@@ -56,6 +63,9 @@ protected:
 public:
 
 	virtual void Tick(float Delta) override;
+
+	void ToggleSensorView(UTextureRenderTarget2D* InCameraRenderTarget);
+	void ToggleLidarView(UTexture2D* InLidarTexture);
 
 	// End Actor interface
 
