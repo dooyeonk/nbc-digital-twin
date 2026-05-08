@@ -86,6 +86,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ToggleCameraAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ToggleSensorViewAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ToggleLidarViewAction;
+
 	/** Reset Vehicle Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ResetVehicleAction;
@@ -136,6 +142,9 @@ public:
 
 	/** Handles toggle camera input */
 	void ToggleCamera(const FInputActionValue& Value);
+
+	void ToggleSensorView(const FInputActionValue& Value);
+	void ToggleLidarView(const FInputActionValue& Value);
 
 	/** Handles reset vehicle input */
 	void ResetVehicle(const FInputActionValue& Value);

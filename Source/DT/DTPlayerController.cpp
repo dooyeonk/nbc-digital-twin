@@ -6,6 +6,7 @@
 #include "DTUI.h"
 #include "EnhancedInputSubsystems.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
+#include "Sensor/SensorViewWidget.h"
 
 void ADTPlayerController::BeginPlay()
 {
@@ -17,6 +18,16 @@ void ADTPlayerController::BeginPlay()
 	check(VehicleUI);
 
 	VehicleUI->AddToViewport();
+
+	if (SensorViewWidgetClass)
+	{
+		SensorViewWidget = CreateWidget<USensorViewWidget>(this, SensorViewWidgetClass);
+		if (SensorViewWidget)
+		{
+			SensorViewWidget->AddToViewport(10);
+			SensorViewWidget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		}
+	}
 }
 
 void ADTPlayerController::SetupInputComponent()
@@ -54,4 +65,26 @@ void ADTPlayerController::OnPossess(APawn* InPawn)
 
 	// get a pointer to the controlled pawn
 	VehiclePawn = CastChecked<ADTPawn>(InPawn);
+}
+
+void ADTPlayerController::ToggleSensorView(UTextureRenderTarget2D* InCameraRenderTarget)
+{
+	if (!SensorViewWidget || !InCameraRenderTarget)
+	{
+		return;
+	}
+
+	SensorViewWidget->SetRenderTarget(InCameraRenderTarget);
+	SensorViewWidget->ToggleCameraView();
+}
+
+void ADTPlayerController::ToggleLidarView(UTexture2D* InLidarTexture)
+{
+	if (!SensorViewWidget || !InLidarTexture)
+	{
+		return;
+	}
+
+	SensorViewWidget->SetLidarRenderTarget(InLidarTexture);
+	SensorViewWidget->ToggleLidarView();
 }

@@ -3,6 +3,7 @@
 #include "DTPawn.h"
 #include "DTWheelFront.h"
 #include "DTWheelRear.h"
+#include "DTPlayerController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -110,6 +111,16 @@ void ADTPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputCompon
 
 		// toggle camera
 		EnhancedInputComponent->BindAction(ToggleCameraAction, ETriggerEvent::Triggered, this, &ADTPawn::ToggleCamera);
+
+		if (ToggleSensorViewAction)
+		{
+			EnhancedInputComponent->BindAction(ToggleSensorViewAction, ETriggerEvent::Started, this, &ADTPawn::ToggleSensorView);
+		}
+
+		if (ToggleLidarViewAction)
+		{
+			EnhancedInputComponent->BindAction(ToggleLidarViewAction, ETriggerEvent::Started, this, &ADTPawn::ToggleLidarView);
+		}
 
 		// reset the vehicle
 		EnhancedInputComponent->BindAction(ResetVehicleAction, ETriggerEvent::Triggered, this, &ADTPawn::ResetVehicle);
@@ -223,6 +234,32 @@ void ADTPawn::ToggleCamera(const FInputActionValue& Value)
 
 	FrontCamera->SetActive(bFrontCameraActive);
 	BackCamera->SetActive(!bFrontCameraActive);
+}
+
+void ADTPawn::ToggleSensorView(const FInputActionValue& Value)
+{
+	if (!CameraSensor)
+	{
+		return;
+	}
+
+	if (ADTPlayerController* PC = Cast<ADTPlayerController>(GetController()))
+	{
+		PC->ToggleSensorView(CameraSensor->GetRenderTarget());
+	}
+}
+
+void ADTPawn::ToggleLidarView(const FInputActionValue& Value)
+{
+	if (!LidarSensor)
+	{
+		return;
+	}
+
+	if (ADTPlayerController* PC = Cast<ADTPlayerController>(GetController()))
+	{
+		PC->ToggleLidarView(LidarSensor->GetBevRenderTarget());
+	}
 }
 
 void ADTPawn::ResetVehicle(const FInputActionValue& Value)
